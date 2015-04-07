@@ -1,10 +1,10 @@
-# Marionette Tree View
+# Backbone Marionette Tree View
 
-Marionette extension rendering list as "Tree View".
+Backbone Marionette extension rendering list as "Tree View".
 
 ## Dependencies
 
-MarionetteJS 2.x.x is required for this extension.
+- Backbone Marionette 2.x.x
 
 ## Installation
 
@@ -19,7 +19,7 @@ JS
 
 ## Exemple
 
-Using *Marionette Tree View* is done in three steps:
+Using **Marionette Tree View** is done in three steps:
 
 1. Create a method 'fetchChildren'. It will fetch the children of the current node.
 
@@ -57,9 +57,9 @@ Using *Marionette Tree View* is done in three steps:
   $(yourcontainer).html(myTreeView.render().el);
 ```
 
-The `collection` is your `Backbone.Collection`
-The `collectionType` is the collection used to manage your children.
-The `childView` is your default view for your first level.
+- `collection` is your `Backbone.Collection`.
+- `collectionType` is the reference to the definition of the collection used to manage your children.
+- `childView` is your definition of your node view for your first level.
 
 
 See the `example` folder for more information about the usage.
