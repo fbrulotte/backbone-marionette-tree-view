@@ -1,0 +1,58 @@
+// Node base properties
+@treeview-node-color: #333;
+@treeview-node-background: white;
+@treeview-node-border-radius: 0;
+
+// Node properties when selected
+@treeview-node-selected-color: white;
+@treeview-node-selected-background: #2196f3;
+
+// Node properties when hover
+@treeview-node-hover-color: @treeview-node-color;
+@treeview-node-hover-background: #f0f0f0;
+
+.tree-view {
+  .node {
+    background: @treeview-node-background;
+    &.active {
+      & > a {
+        color: @treeview-node-selected-color;
+        background: @treeview-node-selected-background;
+        &:hover,
+        &:focus {
+          color: @treeview-node-selected-color;
+          background: @treeview-node-selected-background;
+        }
+      }
+    }
+    & > a {
+      position: relative;
+      cursor: default;
+      display: block;
+      font-size: 14px;
+      padding: 10px 10px;
+      padding-right: 32px;
+      border-radius: @treeview-node-border-radius;
+      color: @treeview-node-color;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      &:hover,
+      &:focus {
+        color: @treeview-node-hover-color;
+        background: @treeview-node-hover-background;
+      }
+      .icon-group {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
+      i {
+        cursor: pointer;
+      }
+    }
+    .children {
+      padding-left: 10px;
+    }
+  }
+}

@@ -1,0 +1,41 @@
+.tree-view .node {
+  background: white;
+}
+.tree-view .node.active > a {
+  color: white;
+  background: #2196f3;
+}
+.tree-view .node.active > a:hover,
+.tree-view .node.active > a:focus {
+  color: white;
+  background: #2196f3;
+}
+.tree-view .node > a {
+  position: relative;
+  cursor: default;
+  display: block;
+  font-size: 14px;
+  padding: 10px 10px;
+  padding-right: 32px;
+  border-radius: 0;
+  color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tree-view .node > a:hover,
+.tree-view .node > a:focus {
+  color: #333333;
+  background: #f0f0f0;
+}
+.tree-view .node > a .icon-group {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.tree-view .node > a i {
+  cursor: pointer;
+}
+.tree-view .node .children {
+  padding-left: 10px;
+}

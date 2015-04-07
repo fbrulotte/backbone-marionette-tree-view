@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width initial-scale=1"/>
+    <link rel='stylesheet' href='../../dist/marionette-tree-view.min.css'/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <style>
+      .hide {
+        display: none !important;
+      }
+    </style>
+    <title>Multi-Nodes</title>
+    </head>
+  <body>
+    <div id="main-container"></div>
+
+    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="../../node_modules/underscore/underscore-min.js"></script>
+    <script src="../../node_modules/backbone/backbone-min.js"></script>
+    <script src="../../node_modules/backbone.marionette/lib/backbone.marionette.min.js"></script>
+    <script src="../../dist/marionette-tree-view.js"></script>
+    <script>
+      var NodeType = {
+        FOLDER: 'FOLDER',
+        FILE: 'FILE'
+      }
+
+      var mockData = [{
+          name: 'rapport.docx',
+          type: NodeType.FILE
+        }, {
+          name: 'folder',
+          type: NodeType.FOLDER
+        }, {
+          name: 'logo.png',
+          type: NodeType.FILE
+        }];
+
+      var FolderNodeModel = Backbone.Model.extend({
+        fetchChildren: function(options) {
+          setTimeout(function() {
+            options.success(mockData);
+          }, 300);
+        }
+      });
+
+      var FileNodeModel = Backbone.Model.extend({
+        fetchChildren: function(options) {
+          setTimeout(function() {
+            options.success([]);
+          }, 300);
+        }
+      });
+
+      var CustomNodeCollection = Backbone.Collection.extend({
+        model: function(attrs, options) {
+          if (attrs.type === NodeType.FOLDER) {
+            return new FolderNodeModel(attrs, options);
+          } else {
+            return new FileNodeModel(attrs, options);
+          }
+        }
+      });
+
+      var CustomNodeView = Marionette.NodeView.extend({
+        getChildView: function(item) {
+          if (item.get('type')=== NodeType.FOLDER) {
+            return FolderNodeView;
+          } else {
+            return FileNodeView ;
+          }
+        }
+      });
+
+      var CustomNodeView = Marionette.NodeView.extend({
+        template: function(data) {
+          if (data.type === NodeType.FOLDER) {
+            return _.template('<a data-toggle="node" class="collapsed"><i class="fa fa-folder"></i> <%=name%><div class="icon-group"><i class="fa fa-exclamation-triangle icon-error pull-right hide"></i><i class="fa fa-plus icon-expand pull-right"></i><i class="fa fa-minus icon-collapse hide pull-right"></i><i class="fa fa-spinner hide icon-loading fa-pulse"></i></div></a><div class="children"></div>')(data);
+          } else {
+            return _.template('<a data-toggle="node" class="collapsed"><i class="fa fa-file"></i> <%=name%><div class="icon-group"><i class="fa fa-exclamation-triangle icon-error pull-right hide"></i><i class="fa fa-plus icon-expand pull-right"></i><i class="fa fa-minus icon-collapse hide pull-right"></i><i class="fa fa-spinner hide icon-loading fa-pulse"></i></div></a><div class="children"></div>')(data);
+          }
+        }
+      });
+
+      var myCollection = new CustomNodeCollection(mockData);
+
+      var myTreeView = new Marionette.TreeView({
+        collection: myCollection,
+        collectionType: CustomNodeCollection,
+        childView: CustomNodeView
+      });
+
+      $('#main-container').html(myTreeView.render().el);
+    </script>
+  </body>
+</html>
