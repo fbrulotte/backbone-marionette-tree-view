@@ -74,6 +74,37 @@ Using **Backbone Marionette Tree View** is done in three steps:
 
 See the `example` folder for more information about the usage.
 
+## Customize
+The basic structure of a node template is (I'm using Font-Awesome for the icons but it's up to you):
+```
+<a data-toggle="node" class="collapsed">
+  <i class="fa fa-pie-chart"></i> <%=name%>
+  <div class="icon-group">
+    <i class="fa fa-exclamation-triangle icon-error pull-right hide"></i>
+    <i class="fa fa-plus icon-expand pull-right"></i>
+    <i class="fa fa-minus icon-collapse hide pull-right"></i>
+    <i class="fa fa-spinner hide icon-loading fa-pulse"></i>
+  </div>
+</a>
+<div class="children"></div>
+```
+By default the `NodeView` is using its own UI element, but you can override it.
+```
+ui: {
+    toggle: 'a[data-toggle=node]',
+    iconCollapse: '.icon-collapse',
+    iconExpand: '.icon-expand',
+    iconLoading: '.icon-loading',
+    iconError: '.icon-error',
+    children: '.children'
+  }
+```
+As you can see, your template must have an icon for `collapse`, an icon for `expand`, an icon for `loading` and an icon for `error`. The classes here are not the one defining the icon itself, just a reference to them.
+
+The `toggle` element is your node.
+
+The nodes children are displayed inside the tag containing the `children` class but you can modify it by overriding the `childViewContainer` when extending the node.
+
 ## Changelog
 
 ##### Version 1.0.0
