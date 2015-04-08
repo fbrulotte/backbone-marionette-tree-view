@@ -67,7 +67,7 @@ module.exports = function(grunt) {
 
     karma: {
       all: {
-        hostname: 'localhost',
+        hostname: '127.0.0.1',
         client: { captureConsole: true },
         options: {
           logLevel: 'INFO',
@@ -83,7 +83,9 @@ module.exports = function(grunt) {
             "node_modules/backbone/backbone-min.js",
             "node_modules/backbone.marionette/lib/backbone.marionette.min.js",
             "dist/marionette-tree-view.min.js",
-            'test/unit/libs/jasmine-jquery.js', 'dist/marionette-tree-view.js', 'test/unit/spec/**/*.js']
+            'test/unit/libs/jasmine-jquery.js',
+            'dist/marionette-tree-view.js',
+            'test/unit/spec/**/*.js']
         }
       }
     },
