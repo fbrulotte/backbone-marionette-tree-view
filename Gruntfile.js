@@ -71,7 +71,7 @@ module.exports = function(grunt) {
         client: { captureConsole: true },
         options: {
           logLevel: 'INFO',
-          browsers: ['Chrome', 'Firefox'],
+          browsers: ['Firefox'],
           frameworks: ['jasmine'],
           reporters: ['progress'],
           singleRun: true,
