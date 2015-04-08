@@ -73,3 +73,8 @@ Using **Backbone Marionette Tree View** is done in three steps:
 
 
 See the `example` folder for more information about the usage.
+
+## Changelog
+
+##### Version 1.0.0
+- Initial commit
