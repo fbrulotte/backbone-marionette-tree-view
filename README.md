@@ -2,6 +2,14 @@
 
 Backbone Marionette extension rendering list as tree view with lazy loading for children.
 
+###### Backbone Marionette Architecture
+![Backbone Marionette Tree View Architecture](http://s1.postimg.org/vs4e82lpr/Untitled_Diagram_1.png)
+
+- `Blue` are the Backbone Marionette Tree View classes.
+- `Green` are the classes created by you to customize the tree view.
+- `Yellow` are the default Backbone classes.
+
+
 ## Features
 
 - List as tree view.
