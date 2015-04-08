@@ -1,27 +1,36 @@
 # Backbone Marionette Tree View
 
-Backbone Marionette extension rendering list as "Tree View".
+Backbone Marionette extension rendering list as tree view with lazy loading for children.
+
+## Features
+
+- List as tree view.
+- Lazy Loading.
+- Create your own templates for nodes.
+- Handle multiple types of nodes.
+- Basic CSS done.
 
 ## Dependencies
 
-- Backbone Marionette 2.x.x
+Backbone Marionette 2.x.x
 
 ## Installation
 
-CSS
+######CSS (you can use your own CSS)
 ```
   <link rel='stylesheet' href='marionette-tree-view.min.css'/>
 ```
-JS
+######JS
 ```
   <script src='marionette-tree-view.min.js></script>
 ```
 
 ## Exemple
 
-Using **Marionette Tree View** is done in three steps:
+Using **Backbone Marionette Tree View** is done in three steps:
 
- 1. Create a method 'fetchChildren'. It will fetch the children of the current node.
+ 1. Add a method 'fetchChildren' to your model which will fetch the children of the current node.
+    The children data should be passed to the `success` callback.
 
   ```
     var CustomNodeModel = Backbone.Model.extend({
@@ -35,7 +44,7 @@ Using **Marionette Tree View** is done in three steps:
     });
   ```
 
- 2. Create your custom node views
+ 2. Create your custom node views.
 
   ```
     var CustomNodeView = Marionette.NodeView.extend({
@@ -43,7 +52,7 @@ Using **Marionette Tree View** is done in three steps:
     });
   ```
 
- 3. Instance your tree view and put it where you want. Raw collection contains your first level of your tree.
+ 3. Instance your tree view and put it where you want. `rawCollection` contains your first level of your tree.
 
   ```
     var myCollection = new CustomNodeCollection(rawCollection);
