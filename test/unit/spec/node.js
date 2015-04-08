@@ -108,6 +108,6 @@ describe("Node View", function() {
     customNodeView.bind('select', foo.bar, customNodeView);
     customNodeView.$('a[data-toggle=node]').trigger(clickEvent);
 
-    expect(foo.bar).toHaveBeenCalled();
+    expect(foo.bar).toHaveBeenCalledWith(model);
   });
 });
