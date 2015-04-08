@@ -9,6 +9,9 @@
     "node",
     "root"
   ],
+  "scripts": {
+    "test": "grunt test --verbose"
+  },
   "dependencies": {
     "backbone": "1.1.2",
     "backbone.marionette": "2.4.1",
