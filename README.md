@@ -33,7 +33,7 @@ Backbone Marionette 2.x.x
   <script src='marionette-tree-view.min.js></script>
 ```
 
-## Exemple
+## Example
 
 Using **Backbone Marionette Tree View** is done in three steps:
 
