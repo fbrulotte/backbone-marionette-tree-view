@@ -1,4 +1,4 @@
-# Backbone Marionette Tree View
+# Backbone Marionette Tree View [![Build Status](https://travis-ci.org/Interfacing/backbone-marionette-tree-view.svg?branch=master)](https://travis-ci.org/Interfacing/backbone-marionette-tree-view)
 
 Backbone Marionette extension rendering list as tree view with lazy loading for children.
 
@@ -33,7 +33,7 @@ Backbone Marionette 2.x.x
   <script src='marionette-tree-view.min.js></script>
 ```
 
-## Exemple
+## Example
 
 Using **Backbone Marionette Tree View** is done in three steps:
 
