@@ -115,5 +115,11 @@ The nodes children are displayed inside the tag containing the `children` class 
 
 ## Changelog
 
+##### Version 1.1.0
+- Add expand/collapse event
+- Remove unselect event
+- Select by default the first element
+- Expand/collapse can be trigger when the 'children' field has changed.
+
 ##### Version 1.0.0
 - Initial commit
