@@ -5,16 +5,6 @@ Marionette.TreeView = Marionette.CollectionView.extend({
   initialize: function(options) {
     options = options || {};
     this.collectionType = options.collectionType;
-    $('body').on('click.treeview' + this.cid, _.bind(this.unselectChildren, this));
-  },
-
-  onBeforeDestroy: function() {
-    $('body').off('click.treeview' + this.cid);
-  },
-
-  unselectChildren: function() {
-    this.$('.node').removeClass('active');
-    this.trigger('unselect');
   },
 
   childViewOptions: function() {
@@ -27,12 +17,26 @@ Marionette.TreeView = Marionette.CollectionView.extend({
     this.children.each(function(child) { this.bindChildView(child); }, this);
   },
 
-  bindChildView: function(childView) {
-    this.listenTo(childView, 'select', this.onChildSelected);
+  onShow: function() {
+    this.children.first().select();
   },
 
-  onChildSelected: function(model) {
+  bindChildView: function(childView) {
+    this.listenTo(childView, 'select', this.onChildSelected);
+    this.listenTo(childView, 'expand', this.onChildExpanded);
+    this.listenTo(childView, 'collapse', this.onChildCollapsed);
+  },
+
+  onChildSelected: function(node) {
     this.$('.node').removeClass('active');
-    this.trigger('select', model);
+    this.trigger('select', node);
+  },
+
+  onChildExpanded: function(node) {
+    this.trigger('expand', node);
+  },
+
+  onChildCollapsed: function(node) {
+    this.trigger('collapse', node);
   }
 });

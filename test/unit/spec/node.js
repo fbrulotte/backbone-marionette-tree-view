@@ -13,7 +13,7 @@ var CustomNodeView = Marionette.NodeView.extend({
   }),
   CustomNodeSuccessModel = Backbone.Model.extend({
     fetchChildren: function(options) {
-      options.success(mockData);
+      this.set('children', new Backbone.Collection(mockData));
     }
   }),
   CustomNodeSuccessCollection = Backbone.Collection.extend({
@@ -26,7 +26,7 @@ var model = new CustomNodeSuccessModel({ name: 'Jean' }),
 
 describe("Node View", function() {
 
-  beforeAll(function() {
+  beforeEach(function() {
     customNodeView = new CustomNodeView({ collectionType: CustomNodeSuccessCollection, model: model });
     customNodeView.render();
   });
@@ -63,12 +63,14 @@ describe("Node View", function() {
   });
 
   it("Node is collapsing", function() {
-    var clickEvent = $.Event('click');
+    var clickEvent = $.Event('click'),
+        clickEvent2 = $.Event('click');
 
     spyOn(customNodeView, 'onCollapse');
 
     customNodeView.delegateEvents();
-    customNodeView.$('a.expanded[data-toggle=node] i').trigger(clickEvent);
+    customNodeView.$('a.collapsed[data-toggle=node] i').trigger(clickEvent);
+    customNodeView.$('a.expanded[data-toggle=node] i').trigger(clickEvent2);
 
     expect(customNodeView.onCollapse).toHaveBeenCalled();
   });

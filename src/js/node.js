@@ -18,6 +18,11 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     'click a[data-toggle=node]': 'onSelect'
   },
 
+  modelEvents: {
+    'change:children': 'onChildrenFetched',
+    'delete:children': 'onCollapse'
+  },
+
   initialize: function(options) {
     options = options || {};
     this.collectionType = options.collectionType;
@@ -37,16 +42,30 @@ Marionette.NodeView = Marionette.CompositeView.extend({
 
     bindChildView: function(childView) {
       this.listenTo(childView, 'select', this.onChildSelected);
+      this.listenTo(childView, 'expand', this.onChildExpand);
+      this.listenTo(childView, 'collapse', this.onChildCollapse);
     },
 
-      onChildSelected: function(model) {
-        this.trigger('select', model);
+      onChildSelected: function(node) {
+        this.trigger('select', node);
+      },
+
+      onChildExpand: function(node) {
+        this.trigger('expand', node);
+      },
+
+      onChildCollapse: function(node) {
+        this.trigger('collapse', node);
       },
 
   onSelect: function(e) {
+    this.select();
+    e.stopPropagation();
+  },
+
+  select: function() {
     this.trigger('select', this.model);
     this.$el.addClass('active');
-    e.stopPropagation();
   },
 
   onExpand: function(e) {
@@ -55,24 +74,40 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     }
 
     this.isExpanding = true;
+    this.setIconsOnExpand();
+
+    this.fetchChildren({
+      error: _.bind(this.onError, this)
+    });
+
+    e.stopPropagation();
+
+    this.trigger('expand', this.model);
+  },
+
+  setIconsOnExpand: function() {
     this.ui.iconError.addClass('hide');
     this.ui.toggle.removeClass('collapsed').addClass('expanded');
     this.ui.iconExpand.addClass('hide');
     this.ui.iconLoading.removeClass('hide');
-
-    this.fetchChildren(
-      _.bind(this.onSuccess, this),
-      _.bind(this.onError, this)
-    );
-
-    e.stopPropagation();
   },
 
-    fetchChildren: function(success, error) {
-      return this.model.fetchChildren({
-        success: success,
-        error: error
-      });
+  onChildrenFetched: function() {
+    this.setIconsOnExpand();
+    this.collection.reset(this.model.get('children').models);
+
+    if (this.collection.size()) {
+      this.ui.iconCollapse.removeClass('hide');
+    } else {
+      this.$el.addClass('node-empty');
+    }
+
+    this.ui.iconLoading.addClass('hide');
+    this.isExpanding = false;
+  },
+
+    fetchChildren: function(options) {
+      return this.model.fetchChildren(options);
     },
 
       onError: function() {
@@ -80,19 +115,6 @@ Marionette.NodeView = Marionette.CompositeView.extend({
         this.ui.iconError.removeClass('hide');
         this.ui.iconLoading.addClass('hide');
         this.ui.toggle.addClass('collapsed').removeClass('expanded');
-        this.isExpanding = false;
-      },
-
-      onSuccess: function(children) {
-        this.collection.reset(children);
-
-        if (this.collection.size()) {
-          this.ui.iconCollapse.removeClass('hide');
-        } else {
-          this.$el.addClass('node-empty');
-        }
-
-        this.ui.iconLoading.addClass('hide');
         this.isExpanding = false;
       },
 
@@ -112,5 +134,7 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     if (e) {
       e.stopPropagation();
     }
+
+    this.trigger('collapse', this.model);
   }
 });
