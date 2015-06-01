@@ -22,18 +22,49 @@
     <script src="../../dist/marionette-tree-view.js"></script>
     <script>
       var mockData = [{
-          name: 'name1'
+          name: 'name1',
+          nbChildren: 3
         }, {
-          name: 'name2'
+          name: 'name2',
+          nbChildren: 0
         }, {
           name: 'name3'
         }];
 
+      var testData = [{
+        name: 'test1',
+        nbChildren: 3,
+        children: [{
+          name: 'test2',
+          nbChildren: 0
+        }, {
+          name: 'test3',
+          nbChildren: 0
+        }]
+      }];
+
       var CustomNodeModel = Backbone.Model.extend({
         fetchChildren: function(options) {
+          var self = this;
           setTimeout(function() {
-            options.success(mockData);
+              self.set('children', new CustomNodeCollection(testData));
           }, 300);
+        },
+
+        destroyChildren: function(options) {
+          options = options || {};
+          if (this.get('children') && this.get('children').size() > 0) {
+            this.get('children').each(function(child) {
+              child.destroyChildren({ silent: true });
+              delete child;
+            });
+
+            this.unset('children', { silent: true });
+
+            if (_.isEmpty(options)) {
+              this.trigger('delete:children');
+            }
+          }
         }
       });
 
@@ -53,7 +84,29 @@
         childView: CustomNodeView
       });
 
-      $('#main-container').html(myTreeView.render().el);
+      var Controller = Marionette.LayoutView.extend({
+        template: _.template('<div id="treeview"> </div>'),
+        regions: {
+          treeView: '#treeview'
+        },
+
+        onRender: function() {
+          this.treeView.show(myTreeView);
+
+          this.listenTo(myTreeView, 'collapse', this.onCollapse);
+          this.listenTo(myTreeView, 'expand', this.onExpand);
+        },
+
+        onExpand: function(model) {
+          model.fetchChildren();
+        },
+
+        onCollapse: function(model) {
+          model.destroyChildren();
+        }
+      });
+
+      $('#main-container').html(new Controller().render().el);
     </script>
   </body>
 </html>

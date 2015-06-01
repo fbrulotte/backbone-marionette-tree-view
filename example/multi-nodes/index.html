@@ -24,32 +24,78 @@
       var NodeType = {
         FOLDER: 'FOLDER',
         FILE: 'FILE'
-      }
+      };
 
       var mockData = [{
-          name: 'rapport.docx',
-          type: NodeType.FILE
+          name: 'some folder',
+          type: NodeType.FOLDER,
+          nbSubFiles: 3,
+          children: [{
+            name: 'other folder',
+            type: NodeType.FOLDER,
+            nbSubFiles: 3,
+            children: [{
+              name: 'other folder',
+              type: NodeType.FOLDER,
+            }, {
+              name: 'status.docx',
+              type: NodeType.FILE,
+              nbSubFiles: 0
+            },  {
+              name: 'image.png',
+              type: NodeType.FILE
+            }]
+          }, {
+            name: 'status.docx',
+            type: NodeType.FILE,
+            nbSubFiles: 0
+          },  {
+            name: 'image.png',
+            type: NodeType.FILE
+          }]
         }, {
-          name: 'folder',
-          type: NodeType.FOLDER
-        }, {
+          name: 'report.docx',
+          type: NodeType.FILE,
+          nbSubFiles: 0
+        },  {
           name: 'logo.png',
           type: NodeType.FILE
         }];
 
+      var newData = [{
+        name: 'other folder',
+        type: NodeType.FOLDER,
+        nbSubFiles: 3
+      }, {
+        name: 'status.docx',
+        type: NodeType.FILE,
+        nbSubFiles: 0
+      },  {
+        name: 'image.png',
+        type: NodeType.FILE
+      }];
+
       var FolderNodeModel = Backbone.Model.extend({
         fetchChildren: function(options) {
+          var self = this;
           setTimeout(function() {
-            options.success(mockData);
+            self.set('children', new CustomNodeCollection(newData));
           }, 300);
+        },
+        destroyChildren: function() {
+          this.unset('children',{silent: true});
         }
       });
 
       var FileNodeModel = Backbone.Model.extend({
         fetchChildren: function(options) {
+          var self = this;
           setTimeout(function() {
-            options.success([]);
-          }, 300);
+            self.set('children', new CustomNodeCollection());
+          }, 200);
+        },
+        destroyChildren: function() {
+          this.unset('children',{silent: true});
         }
       });
 
@@ -59,16 +105,6 @@
             return new FolderNodeModel(attrs, options);
           } else {
             return new FileNodeModel(attrs, options);
-          }
-        }
-      });
-
-      var CustomNodeView = Marionette.NodeView.extend({
-        getChildView: function(item) {
-          if (item.get('type')=== NodeType.FOLDER) {
-            return FolderNodeView;
-          } else {
-            return FileNodeView ;
           }
         }
       });
@@ -88,10 +124,18 @@
       var myTreeView = new Marionette.TreeView({
         collection: myCollection,
         collectionType: CustomNodeCollection,
-        childView: CustomNodeView
+        childView: CustomNodeView,
+        nbChildrenAttrName: 'nbSubFiles'
       });
 
+      myTreeView.on('expand', function(model) {
+        model.fetchChildren();
+      });
+      myTreeView.on('collapse', function(model) {
+        model.destroyChildren();
+      });
       $('#main-container').html(myTreeView.render().el);
+
     </script>
   </body>
 </html>
