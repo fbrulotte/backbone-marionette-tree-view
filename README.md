@@ -33,6 +33,25 @@ Backbone Marionette 2.x.x
   <script src='marionette-tree-view.min.js></script>
 ```
 
+## Events
+**Model Events**
+
+| Event Name    | Associated Callback | Callback functionality | Triggered When |
+| ------------- | ------------------- | ------------------- | ------------------- |
+| `change:children` | `onChangeChildren` | Reset the children collection and update the view | the `children` attribute of a model is changed by calling `model.set(attributes, [options])` after successfully fetching the children's data | 
+| `delete:children` | `onDeleteChildren` | Collapse the children into its parent node. Only usage is to be in synch with the model if another view received input that led to the deletion of the children | `trigger("delete:children")` is called from inside a model's `destroyChildren` function. | 
+| `error`     | `onError` | Update the view and display an error icon | `trigger('error')` is called by the model's logic if there was an error while trying to fetch this node's `children`|
+
+**View Events**
+
+| UI Element    | Action | Associated Callback | Callback functionality |
+| ------------- | ------------------- | ------------------- | ------------------- |
+| `@ui.iconExpand` | `click` event on the ui element | `onExpand` | Show the collapse icon and `this.trigger('expand', this.model);` if the node has children|
+| `@ui.iconCollapse` | `click` event on the ui element | `onCollapse` | Show the expand icon and `this.trigger('collapse', this.model);` if the node has children| 
+| `@ui.toggle`     | `click` event on the ui element | `onSelect` | `this.trigger('collapse', this.model);`, remove the css class `active` on all node and add it to the clicked node | 
+
+*The triggers from children nodes will be propagated towards the top level view, TreeView. You can listen on those events in another view so everything is synched. For an example of this, take a look at the `var Controller = Marionette.LayoutView.extend({...});` in the basic example provided with this library*
+
 ## Example
 
 Using **Backbone Marionette Tree View** is done in three steps:
