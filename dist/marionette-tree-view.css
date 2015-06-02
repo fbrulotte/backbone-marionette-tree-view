@@ -33,7 +33,8 @@
   right: 10px;
   top: 10px;
 }
-.tree-view .node > a i {
+.tree-view .node > a .icon-collapse,
+.tree-view .node > a .icon-expand {
   cursor: pointer;
 }
 .tree-view .node .children {

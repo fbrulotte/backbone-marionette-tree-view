@@ -13,54 +13,115 @@ Marionette.NodeView = Marionette.CompositeView.extend({
   },
 
   events: {
-    'click a.collapsed[data-toggle=node] i': 'onExpand',
-    'click a.expanded[data-toggle=node] i': 'onCollapse',
-    'click a[data-toggle=node]': 'onSelect'
+    'click @ui.iconExpand': 'onExpand',
+    'click @ui.iconCollapse': 'onCollapse',
+    'click @ui.toggle': 'onSelect'
   },
 
   modelEvents: {
-    'change:children': 'onChildrenFetched',
-    'delete:children': 'onCollapse'
+    'change:children': 'onChangeChildren',
+    'delete:children': 'onDeleteChildren',
+    'error': 'onError'
   },
 
   initialize: function(options) {
+    var models = [];
+
     options = options || {};
+    this.nbChildrenAttrName = (options.nbChildrenAttrName ? options.nbChildrenAttrName : 'nbChildren');
     this.collectionType = options.collectionType;
-    this.collection = this.model.get("children") || new this.collectionType();
+
+    if (this.model.get('children')) {
+      if (!_.isArray(this.model.get('children'))) {
+        models = this.model.get('children').models;
+      } else {
+        models = this.model.get('children');
+      }
+    }
+    this.collection = new this.collectionType(models);
   },
 
   childViewOptions: function() {
     return {
-      collectionType: this.collectionType
+      collectionType: this.collectionType,
+      nbChildrenAttrName: this.nbChildrenAttrName
     };
   },
 
+  onRender: function() {
+    if (this.model.get(this.nbChildrenAttrName) === 0){
+      this.ui.iconExpand.addClass('hide');
+    }
+  },
+
   onRenderCollection: function() {
+    this.ui.iconExpand.addClass('hide');
+
+    if (this.model.get(this.nbChildrenAttrName) !== 0){
+      this.ui.iconCollapse.removeClass('hide');
+    }
+
     this.ui.children.removeClass('hide');
     this.children.each(function(child) { this.bindChildView(child); }, this);
   },
 
-    bindChildView: function(childView) {
-      this.listenTo(childView, 'select', this.onChildSelected);
-      this.listenTo(childView, 'expand', this.onChildExpand);
-      this.listenTo(childView, 'collapse', this.onChildCollapse);
-    },
+  bindChildView: function(childView) {
+    this.listenTo(childView, 'select', this.onChildSelected);
+    this.listenTo(childView, 'expand', this.onChildExpand);
+    this.listenTo(childView, 'collapse', this.onChildCollapse);
+  },
 
-      onChildSelected: function(node) {
-        this.trigger('select', node);
-      },
+  onChildSelected: function(node) {
+    this.trigger('select', node);
+  },
 
-      onChildExpand: function(node) {
-        this.trigger('expand', node);
-      },
+  onChildExpand: function(node) {
+    this.trigger('expand', node);
+  },
 
-      onChildCollapse: function(node) {
-        this.trigger('collapse', node);
-      },
+  onChildCollapse: function(node) {
+    this.trigger('collapse', node);
+  },
 
   onSelect: function(e) {
     this.select();
     e.stopPropagation();
+  },
+
+  onExpand: function(e) {
+    if (this.expand()) {
+      this.trigger('expand', this.model);
+    }
+    e.stopPropagation();
+  },
+
+  onCollapse: function(e) {
+    if (this.collapse()) {
+      this.trigger('collapse', this.model);
+    }
+    e.stopPropagation();
+  },
+
+  onDeleteChildren: function() {
+    this.collapse();
+  },
+
+  onError: function() {
+    this.setIconsOnError();
+    this.isExpanding = false;
+  },
+
+  onChangeChildren: function() {
+    this.collection.reset(this.model.get('children').models);
+    this.ui.iconExpand.addClass('hide');
+
+    if (this.collection.size()) {
+      this.ui.iconCollapse.removeClass('hide');
+    } else {
+      this.$el.addClass('node-empty');
+    }
+    this.ui.iconLoading.addClass('hide');
+    this.isExpanding = false;
   },
 
   select: function() {
@@ -68,21 +129,31 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     this.$el.addClass('active');
   },
 
-  onExpand: function(e) {
+  expand: function() {
     if (this.$el.hasClass('node-empty')) {
       return false;
     }
 
-    this.isExpanding = true;
     this.setIconsOnExpand();
+    return (this.isExpanding = true);
+  },
 
-    this.fetchChildren({
-      error: _.bind(this.onError, this)
-    });
+  collapse: function() {
+    if (this.$el.hasClass('node-empty') || this.isExpanding) {
+      return false;
+    }
 
-    e.stopPropagation();
+    this.setIconsOnCollapse();
+    this.collection.reset();
 
-    this.trigger('expand', this.model);
+    return true;
+  },
+
+  setIconsOnCollapse: function() {
+    this.ui.toggle.addClass('collapsed').removeClass('expanded');
+    this.ui.iconCollapse.addClass('hide');
+    this.ui.iconExpand.removeClass('hide');
+    this.ui.children.addClass('hide');
   },
 
   setIconsOnExpand: function() {
@@ -92,49 +163,10 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     this.ui.iconLoading.removeClass('hide');
   },
 
-  onChildrenFetched: function() {
-    this.setIconsOnExpand();
-    this.collection.reset(this.model.get('children').models);
-
-    if (this.collection.size()) {
-      this.ui.iconCollapse.removeClass('hide');
-    } else {
-      this.$el.addClass('node-empty');
-    }
-
-    this.ui.iconLoading.addClass('hide');
-    this.isExpanding = false;
-  },
-
-    fetchChildren: function(options) {
-      return this.model.fetchChildren(options);
-    },
-
-      onError: function() {
-        this.ui.iconExpand.removeClass('hide');
-        this.ui.iconError.removeClass('hide');
-        this.ui.iconLoading.addClass('hide');
-        this.ui.toggle.addClass('collapsed').removeClass('expanded');
-        this.isExpanding = false;
-      },
-
-  onCollapse: function(e) {
-    if (this.$el.hasClass('node-empty') || this.isExpanding) {
-      return false;
-    }
-
-    this.ui.toggle.addClass('collapsed').removeClass('expanded');
-
-    this.ui.iconCollapse.addClass('hide');
+  setIconsOnError: function() {
     this.ui.iconExpand.removeClass('hide');
-    this.ui.children.addClass('hide');
-
-    this.children.each(function(child) { child.onCollapse(); });
-
-    if (e) {
-      e.stopPropagation();
-    }
-
-    this.trigger('collapse', this.model);
+    this.ui.iconError.removeClass('hide');
+    this.ui.iconLoading.addClass('hide');
+    this.ui.toggle.addClass('collapsed').removeClass('expanded');
   }
 });

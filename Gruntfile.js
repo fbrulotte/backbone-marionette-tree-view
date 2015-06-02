@@ -43,8 +43,7 @@ module.exports = function(grunt) {
       main: {
         options: {
           compress: true,
-          mangle: true,
-          screwIE8: true
+          mangle: true
         },
         files: {
           'dist/marionette-tree-view.min.js': [

@@ -5,20 +5,23 @@ Marionette.TreeView = Marionette.CollectionView.extend({
   initialize: function(options) {
     options = options || {};
     this.collectionType = options.collectionType;
+    this.nbChildrenAttrName = options.nbChildrenAttrName;
   },
 
   childViewOptions: function() {
     return {
-      collectionType: this.collectionType
+      collectionType: this.collectionType,
+      nbChildrenAttrName: this.nbChildrenAttrName
     };
-  },
-
-  onRenderCollection: function() {
-    this.children.each(function(child) { this.bindChildView(child); }, this);
   },
 
   onShow: function() {
     this.children.first().select();
+  },
+
+  _addChildView: function(view, index) {
+    Marionette.CollectionView.prototype._addChildView.apply(this, arguments);
+    this.bindChildView(view);
   },
 
   bindChildView: function(childView) {
