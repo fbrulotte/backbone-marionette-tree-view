@@ -49,7 +49,7 @@ Using **Backbone Marionette Tree View** is done in three steps:
       fetchChildren: function(options) {
         // Do something with options.success and options.error
       }
-      fetchChildren: function(options) {
+      deleteChildren: function(options) {
         // Recursive function to delete children
         // View basic example provided with the library for some example code
       }
@@ -145,10 +145,10 @@ The nodes children are displayed inside the tag containing the `children` class 
 - Completed tests with http://jasmine.github.io/ for src\js\node.js and src\js\tree.js, they can be found at  test\unit\spec\
 
 ##### Version 1.1.0
-- Add expand/collapse event
-- Remove unselect event
-- Select by default the first element
-- Expand/collapse can be trigger when the 'children' field has changed.
+- Added expand/collapse event
+- Removed unselect event
+- Selected by default the first element
+- Expand/collapse can be triggered when the 'children' field has changed.
 
 ##### Version 1.0.0
 - Initial commit
