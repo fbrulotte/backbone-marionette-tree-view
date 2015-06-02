@@ -28,7 +28,7 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     var models = [];
 
     options = options || {};
-    this.nbChildrenAttrName = ((options.nbChildrenAttrName) ? options.nbChildrenAttrName : 'nbChildren');
+    this.nbChildrenAttrName = (options.nbChildrenAttrName ? options.nbChildrenAttrName : 'nbChildren');
     this.collectionType = options.collectionType;
 
     if (this.model.get('children')) {
@@ -89,15 +89,17 @@ Marionette.NodeView = Marionette.CompositeView.extend({
   },
 
   onExpand: function(e) {
-    this.expand();
+    if (this.expand()) {
+      this.trigger('expand', this.model);
+    }
     e.stopPropagation();
-    this.trigger('expand', this.model);
   },
 
   onCollapse: function(e) {
-    this.collapse();
+    if (this.collapse()) {
+      this.trigger('collapse', this.model);
+    }
     e.stopPropagation();
-    this.trigger('collapse', this.model);
   },
 
   onDeleteChildren: function() {
@@ -131,16 +133,20 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     if (this.$el.hasClass('node-empty')) {
       return false;
     }
-    this.isExpanding = true;
+
     this.setIconsOnExpand();
+    return (this.isExpanding = true);
   },
 
   collapse: function() {
     if (this.$el.hasClass('node-empty') || this.isExpanding) {
       return false;
     }
+
     this.setIconsOnCollapse();
     this.collection.reset();
+
+    return true;
   },
 
   setIconsOnCollapse: function() {

@@ -84,6 +84,7 @@
         },
         destroyChildren: function() {
           this.unset('children',{silent: true});
+          this.trigger('delete:children');
         }
       });
 
@@ -96,6 +97,7 @@
         },
         destroyChildren: function() {
           this.unset('children',{silent: true});
+          this.trigger('delete:children');
         }
       });
 

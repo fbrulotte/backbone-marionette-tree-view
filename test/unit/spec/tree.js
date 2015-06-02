@@ -18,7 +18,7 @@
     },
 
     destroyChildren: function(options) {
-      this.unset('children', {silent: true});
+      this.unset('children', { silent: true });
       this.trigger('delete:children');
     }
   });
@@ -58,8 +58,8 @@
   });
 
   var controller = {
-    reactOnSelect: function () {},
-    reactOnCollapse: function () {}
+    reactOnSelect: function() {},
+    reactOnCollapse: function() {}
   };
 
   describe("TreeView", function() {
@@ -69,7 +69,7 @@
       this.customLayout.render();
     });
 
-    it("should be well initialized", function () {
+    it("should be well initialized", function() {
       expect(this.customLayout).toBeDefined();
       expect(this.customLayout.treeView.currentView instanceof Marionette.TreeView).toBeTruthy();
       expect(this.customLayout.treeView.currentView.collection instanceof CustomNodeCollection).toBeTruthy();
@@ -77,13 +77,13 @@
       expect(this.customLayout.treeView.currentView.children.findByIndex(0) instanceof CustomNodeView).toBeTruthy();
     });
 
-    it("should set the first node as selected/active after the view is showed", function () {
+    it("should set the first node as selected/active after the view is showed", function() {
       expect(this.customLayout.treeView.currentView.children.first().$el.hasClass('active')).toBeTruthy();
       expect(this.customLayout.treeView.currentView.children.findByIndex(1).$el.hasClass('active')).toBeFalsy();
       expect(this.customLayout.treeView.currentView.children.findByIndex(2).$el.hasClass('active')).toBeFalsy();
     });
 
-    it("should change the selected/active node after a select event is triggered", function () {
+    it("should change the selected/active node after a select event is triggered", function() {
       expect(this.customLayout.treeView.currentView.children.findByIndex(0).$el.hasClass('active')).toBeTruthy();
       expect(this.customLayout.treeView.currentView.children.findByIndex(1).$el.hasClass('active')).toBeFalsy();
       expect(this.customLayout.treeView.currentView.children.findByIndex(2).$el.hasClass('active')).toBeFalsy();
@@ -95,7 +95,7 @@
       expect(this.customLayout.treeView.currentView.children.findByIndex(2).$el.hasClass('active')).toBeFalsy();
     });
 
-    it("should listen to the event bound to childviews that were added after the initial creation of the treeview", function () {
+    it("should listen to the event bound to childviews that were added after the initial creation of the treeview", function() {
       spyOn(controller, 'reactOnCollapse');
 
       this.customLayout.treeView.currentView.collection.add({ name: 'newChild' });
@@ -106,7 +106,7 @@
       expect(controller.reactOnCollapse).toHaveBeenCalled();
     });
 
-    it("should trigger the select event, propagate it towards the treeview's controller and call it's associated callback", function () {
+    it("should trigger the select event, propagate it towards the treeview's controller and call it's associated callback", function() {
       spyOn(controller, 'reactOnSelect');
       this.customLayout.bind('select', controller.reactOnSelect, controller);
 
