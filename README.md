@@ -37,13 +37,21 @@ Backbone Marionette 2.x.x
 
 Using **Backbone Marionette Tree View** is done in three steps:
 
- 1. Add a method 'fetchChildren' to your model which will fetch the children of the current node.
+ 1. Define your model and add a method 'fetchChildren' to it which will fetch the children of the current node.
     The children data should be passed to the `success` callback.
+
+    Add a method 'deleteChildren' to your model which will delete all children and unset them.
+    
+    Define your collection.
 
   ```
     var CustomNodeModel = Backbone.Model.extend({
       fetchChildren: function(options) {
         // Do something with options.success and options.error
+      }
+      fetchChildren: function(options) {
+        // Recursive function to delete children
+        // View basic example provided with the library for some example code
       }
     });
   
@@ -52,7 +60,7 @@ Using **Backbone Marionette Tree View** is done in three steps:
     });
   ```
 
- 2. Create your custom node views.
+ 2. Create your custom node view and define its template.
 
   ```
     var CustomNodeView = Marionette.NodeView.extend({
@@ -60,15 +68,28 @@ Using **Backbone Marionette Tree View** is done in three steps:
     });
   ```
 
- 3. Instance your tree view and put it where you want. `rawCollection` contains your first level of your tree.
+ 3. Instance your tree view and put it where you want. `rawCollection` contains your first level of your tree. You can specify an optional attribute that represents the number of children each node possess. Here the attribute is named nbSubFiles and represents the number of files that are contained in a specific folder. 
+
+  A positive value will have the default behavior. A value of 0 will hide the expand icon associated to that node. When the    value is not defined, the expand icon will appear since we do not know if this node has children.
 
   ```
+    var rawCollection = [{
+          name: 'images folder',
+          nbSubFiles: 3
+        }, {
+          name: 'music folder',
+          nbSubFiles: 0
+        }, {
+          name: 'video.mp4'
+        }];
+        
     var myCollection = new CustomNodeCollection(rawCollection);
   
     var myTreeView = new Marionette.TreeView({
       collection: myCollection,
       collectionType: CustomNodeCollection,
-      childView: CustomNodeView
+      childView: CustomNodeView,
+      nbChildrenAttrName: 'nbSubFiles'
     });
   
     $(yourcontainer).html(myTreeView.render().el);
@@ -77,13 +98,14 @@ Using **Backbone Marionette Tree View** is done in three steps:
   - `collection` is your `Backbone.Collection`.
   - `collectionType` is the reference to the definition of the collection used to manage your children.
   - `childView` is your definition of your node view for your first level.
+  - `nbChildrenAttrName` is when you want to override the default name of the attribute 'nbChildren'
 
 
 
 See the `example` folder for more information about the usage.
 
 ## Customize
-The basic structure of a node template is (I'm using Font-Awesome for the icons but it's up to you):
+The basic structure of a node template is (The library is using Font-Awesome for the icons but it's up to you):
 ```
 <a data-toggle="node" class="collapsed">
   <i class="fa fa-pie-chart"></i> <%=name%>
@@ -114,6 +136,13 @@ The `toggle` element is your node.
 The nodes children are displayed inside the tag containing the `children` class but you can modify it by overriding the `childViewContainer` when extending the node.
 
 ## Changelog
+##### Version 1.2.0
+- Model events have now a more appropriate callback associated to them
+- Added the 'error' model event and the associated callback that updates the view
+- Added support for a new attribute in the model indicating its number of children: use default nbChildren or use your prefererd name and pass it in the options when creating a new TreeView (Ex : nbChildrenAttrName: 'nbSubFiles')
+- Visibility of the node's icons is now based on the node's number of children attribute
+- Fixed a bug where the expand icon would show (instead of collapse icon) on expanded nodes when initializing a tree with nodes that have children
+- Completed tests with http://jasmine.github.io/ for src\js\node.js and src\js\tree.js, they can be found at  test\unit\spec\
 
 ##### Version 1.1.0
 - Add expand/collapse event
