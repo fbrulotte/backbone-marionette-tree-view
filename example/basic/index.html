@@ -44,6 +44,7 @@
       }];
 
       var CustomNodeModel = Backbone.Model.extend({
+
         fetchChildren: function(options) {
           var self = this;
           setTimeout(function() {
@@ -52,19 +53,8 @@
         },
 
         destroyChildren: function(options) {
-          options = options || {};
-          if (this.get('children') && this.get('children').size() > 0) {
-            this.get('children').each(function(child) {
-              child.destroyChildren({ silent: true });
-              delete child;
-            });
-
-            this.unset('children', { silent: true });
-
-            if (_.isEmpty(options)) {
-              this.trigger('delete:children');
-            }
-          }
+          this.unset('children', { silent: true });
+          this.trigger('delete:children');
         }
       });
 
@@ -102,6 +92,7 @@
         },
 
         onCollapse: function(model) {
+          console.log(model.get('name'));
           model.destroyChildren();
         }
       });
