@@ -52,6 +52,8 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     if (this.model.get(this.nbChildrenAttrName) === 0){
       this.ui.iconExpand.addClass('hide');
     }
+
+    this.$el.attr('data-node-id', this.model.id);
   },
 
   onRenderCollection: function() {
