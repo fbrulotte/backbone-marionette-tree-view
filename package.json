@@ -2,6 +2,8 @@
   "name": "marionette-tree-view",
   "description": "Tree view based on MarionetteJS",
   "version": "1.2.0",
+  "main": "dist/marionette-tree-view.js",
+  "style": "dist/marionette-tree-view.css",
   "keywords": [
     "marionette",
     "backbone",
