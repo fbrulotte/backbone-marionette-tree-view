@@ -94,14 +94,14 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     if (this.expand()) {
       this.trigger('expand', this.model);
     }
-    e.stopPropagation();
+    //e.stopPropagation();
   },
 
   onCollapse: function(e) {
     if (this.collapse()) {
       this.trigger('collapse', this.model);
     }
-    e.stopPropagation();
+    //e.stopPropagation();
   },
 
   onDeleteChildren: function() {
