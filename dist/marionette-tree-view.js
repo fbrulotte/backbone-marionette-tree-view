@@ -94,6 +94,7 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     if (this.expand()) {
       this.trigger('expand', this.model);
     }
+    console.log('expand', e);
     //e.stopPropagation();
   },
 
@@ -101,6 +102,7 @@ Marionette.NodeView = Marionette.CompositeView.extend({
     if (this.collapse()) {
       this.trigger('collapse', this.model);
     }
+    console.log('collapse', e);
     //e.stopPropagation();
   },
 
